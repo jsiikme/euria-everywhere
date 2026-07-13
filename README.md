@@ -14,26 +14,32 @@ Fonctionnalités : **Résumer**, **Extraire les points clés**, **Rechercher un 
 
 > Captures d'illustration ; la page servant de décor et le nom « Euria » appartiennent à Infomaniak.
 
-## Installation (test local)
+## Installation
 
-D'abord construire les deux variantes :
+Le plus simple : télécharger le paquet prêt à l'emploi depuis la [dernière release](https://github.com/jsiikme/euria-everywhere/releases/latest) — **aucun build nécessaire**. Décompressez le ZIP correspondant à votre navigateur, puis :
+
+**Firefox** (`…-firefox.zip`)
+1. Ouvrir `about:debugging#/runtime/this-firefox`
+2. **« Charger un module complémentaire temporaire… »** → sélectionner le `manifest.json` du dossier décompressé
+
+L'extension reste chargée jusqu'au redémarrage de Firefox. Pour du permanent : signature via [addons.mozilla.org](https://addons.mozilla.org) (`web-ext sign`) ou Firefox Developer Edition avec `xpinstall.signatures.required = false`.
+
+**Brave / Chromium** (`…-brave.zip`)
+1. Ouvrir `brave://extensions` (ou `chrome://extensions`)
+2. Activer le **Mode développeur** (interrupteur en haut à droite)
+3. **« Charger l'extension non empaquetée »** → sélectionner le dossier décompressé
+
+L'installation persiste entre les redémarrages. Sous Chromium, la permission `api.infomaniak.com` est accordée automatiquement à l'installation (pas d'étape supplémentaire, contrairement à Firefox < 127).
+
+## Construire depuis les sources
+
+Uniquement si vous partez du clone git (pour développer). Firefox et Chromium exigent des `manifest.json` différents et incompatibles (event page vs service worker, SVG vs PNG) ; `build.sh` assemble un dossier propre par navigateur :
 
 ```sh
 ./build.sh   # produit dist/firefox et dist/brave
 ```
 
-**Firefox**
-1. Ouvrir `about:debugging#/runtime/this-firefox`
-2. **« Charger un module complémentaire temporaire… »** → sélectionner `dist/firefox/manifest.json`
-
-L'extension reste chargée jusqu'au redémarrage de Firefox. Pour du permanent : signature via [addons.mozilla.org](https://addons.mozilla.org) (`web-ext sign`) ou Firefox Developer Edition avec `xpinstall.signatures.required = false`.
-
-**Brave (ou tout Chromium)**
-1. Ouvrir `brave://extensions` (ou `chrome://extensions`)
-2. Activer le **Mode développeur** (interrupteur en haut à droite)
-3. **« Charger l'extension non empaquetée »** → sélectionner le dossier `dist/brave`
-
-L'installation persiste entre les redémarrages. Sous Chromium, la permission `api.infomaniak.com` est accordée automatiquement à l'installation (pas d'étape supplémentaire, contrairement à Firefox < 127).
+Chargez ensuite `dist/firefox` ou `dist/brave` comme ci-dessus. (À défaut, `dist/` n'est pas versionné.)
 
 ## Utilisation
 
