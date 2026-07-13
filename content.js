@@ -532,6 +532,7 @@
 
     setupDragAndPersist(panel);
     document.documentElement.appendChild(host);
+    tryRestoreFromCache();
   }
 
   /* ---------- Déplacement + persistance position/taille ---------- */
@@ -625,6 +626,7 @@
     if (!host) buildPanel();
     host.style.display = "";
     ui.input.focus();
+    tryRestoreFromCache();
   }
   function hidePanel() {
     if (host) host.style.display = "none";
