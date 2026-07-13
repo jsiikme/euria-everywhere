@@ -46,19 +46,19 @@ async function sendToTab(tabId, msg) {
  */
 
 const MENUS = [
-  { id: "euria-summarize", title: "Résumer la page", contexts: ["page"], action: "summarize", useSelection: false },
-  { id: "euria-keypoints", title: "Extraire les points clés", contexts: ["page"], action: "keypoints", useSelection: false },
-  { id: "euria-translate-page", title: "Traduire la page", contexts: ["page"], action: "translate", useSelection: false },
-  { id: "euria-summarize-sel", title: "Résumer la sélection", contexts: ["selection"], action: "summarize", useSelection: true },
-  { id: "euria-explain-sel", title: "Rechercher « %s »", contexts: ["selection"], action: "term", useSelection: true },
-  { id: "euria-translate-sel", title: "Traduire la sélection", contexts: ["selection"], action: "translate", useSelection: true }
+  { id: "euria-summarize", titleKey: "menuSummarizePage", contexts: ["page"], action: "summarize", useSelection: false },
+  { id: "euria-keypoints", titleKey: "menuKeypoints", contexts: ["page"], action: "keypoints", useSelection: false },
+  { id: "euria-translate-page", titleKey: "menuTranslatePage", contexts: ["page"], action: "translate", useSelection: false },
+  { id: "euria-summarize-sel", titleKey: "menuSummarizeSel", contexts: ["selection"], action: "summarize", useSelection: true },
+  { id: "euria-explain-sel", titleKey: "menuTermSel", contexts: ["selection"], action: "term", useSelection: true },
+  { id: "euria-translate-sel", titleKey: "menuTranslateSel", contexts: ["selection"], action: "translate", useSelection: true }
 ];
 
 async function createMenus() {
   await browser.contextMenus.removeAll();
-  browser.contextMenus.create({ id: "euria-root", title: "Euria", contexts: ["page", "selection"] });
-  for (const { id, title, contexts } of MENUS) {
-    browser.contextMenus.create({ id, title, contexts, parentId: "euria-root" });
+  browser.contextMenus.create({ id: "euria-root", title: EURIA_T("menuRoot"), contexts: ["page", "selection"] });
+  for (const { id, titleKey, contexts } of MENUS) {
+    browser.contextMenus.create({ id, title: EURIA_T(titleKey), contexts, parentId: "euria-root" });
   }
 }
 
@@ -102,14 +102,14 @@ const REASONING_FLUSH_MS = 150;
 async function checkPrerequisites(settings) {
   if (!settings.apiToken) {
     browser.runtime.openOptionsPage();
-    return "Aucun jeton API configuré. La page de préférences vient de s'ouvrir : collez-y votre jeton Infomaniak AI Tools.";
+    return EURIA_T("errNoToken");
   }
   if (!settings.apiUrl.startsWith(EURIA_API_ORIGIN)) {
-    return `URL d'API refusée : le jeton n'est envoyé qu'à ${EURIA_API_ORIGIN}. Corrigez l'URL dans les préférences.`;
+    return EURIA_T("errBadUrl").replace("%s", EURIA_API_ORIGIN);
   }
   const granted = await browser.permissions.contains({ origins: [EURIA_API_ORIGIN + "*"] });
   if (!granted) {
-    return "Permission manquante pour api.infomaniak.com. Ouvrez about:addons → Euria Everywhere → Permissions et autorisez l'accès à api.infomaniak.com.";
+    return EURIA_T("errNoPermission");
   }
   return null;
 }

@@ -66,6 +66,7 @@ Préférences (`about:addons` → Euria Everywhere → Préférences) :
 - **Économie de contexte** : contenu de page limité (réglable) et historique tronqué aux 8 derniers messages à chaque appel.
 - **Streaming robuste** : rendu limité à un re-rendu par frame (`requestAnimationFrame`), deltas de raisonnement relayés par paquets, retry automatique avec backoff sur HTTP 429/5xx + bouton « Réessayer ».
 - **Panneau en Shadow DOM** (mode `closed`) : styles isolés du site visité, `z-index` maximal.
+- **Bilingue automatique** : l'interface, les menus, les prompts modèle et la page de préférences basculent en anglais si la langue du navigateur n'est pas le français (français sinon). Aucun réglage à faire.
 
 ## Structure
 

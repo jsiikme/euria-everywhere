@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Euria Everywhere (Unofficial)",
-  "version": "1.2.1",
-  "description": "Extension non officielle : résumer, extraire les points clés, rechercher un terme et traduire n'importe quelle page web via l'API AI d'Infomaniak. Non affiliée à Infomaniak.",
+  "version": "1.3.0",
+  "description": "Unofficial extension: summarize, extract key points, look up a term and translate any web page via Infomaniak's AI API — data stays in Europe. Not affiliated with Infomaniak.",
   "minimum_chrome_version": "116",
   "icons": {
     "48": "icons/euria-48.png",
@@ -30,7 +30,7 @@
   "commands": {
     "toggle-panel": {
       "suggested_key": { "default": "Alt+Shift+E" },
-      "description": "Ouvrir/fermer le panneau Euria"
+      "description": "Open/close the Euria panel"
     }
   },
   "options_ui": {

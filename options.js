@@ -6,6 +6,20 @@
 
 const FIELDS = ["apiUrl", "apiToken", "model", "maxPageChars"];
 
+// Localise l'interface selon la langue du navigateur (voir defaults.js).
+function localize() {
+  document.documentElement.lang = EURIA_LANG();
+  document.title = EURIA_T("optTitle");
+  const map = {
+    "t-title": "optTitle", "t-apiUrl": "optApiUrl", "t-apiToken": "optApiToken",
+    "t-hint": "optHint", "t-model": "optModel", "t-maxPageChars": "optMaxChars", "save": "optSave"
+  };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = EURIA_T(key);
+  }
+}
+
 function setStatus(text, isError) {
   const status = document.getElementById("status");
   status.textContent = text;
@@ -33,14 +47,15 @@ async function save() {
   if (!(values.maxPageChars > 0)) values.maxPageChars = EURIA_DEFAULTS.maxPageChars;
 
   if (!values.apiUrl.startsWith(EURIA_API_ORIGIN)) {
-    setStatus(`URL refusée : elle doit commencer par ${EURIA_API_ORIGIN}`, true);
+    setStatus(EURIA_T("optUrlRejected").replace("%s", EURIA_API_ORIGIN), true);
     return;
   }
 
   await browser.storage.local.set(values);
   await load(); // réaffiche les valeurs normalisées
-  setStatus("Enregistré ✓", false);
+  setStatus(EURIA_T("optSaved"), false);
 }
 
 document.getElementById("save").addEventListener("click", save);
+localize();
 load();
