@@ -493,7 +493,10 @@
 
     panel.querySelector(".close").addEventListener("click", hidePanel);
     panel.querySelector(".expand").addEventListener("click", toggleExpand);
-    panel.querySelector(".reset").addEventListener("click", resetConversation);
+    panel.querySelector(".reset").addEventListener("click", () => {
+      resetConversation();
+      clearFromCache(currentUrl);
+    });
     panel.addEventListener("keydown", (e) => {
       if (e.key === "Escape") hidePanel();
       e.stopPropagation(); // évite les raccourcis clavier de la page
@@ -658,11 +661,11 @@
       } else if (role === "assistant") {
         const { msgEl, answerEl } = addAssistantBubble();
         answerEl.innerHTML = renderMarkdown(content);
-        createMetaRow(msgEl, "Copier", async (e) => {
+        createMetaRow(msgEl, T("copy"), async (e) => {
           const btn = e.currentTarget;
           await navigator.clipboard.writeText(content);
-          btn.textContent = "Copié ✓";
-          setTimeout(() => (btn.textContent = "Copier"), 1500);
+          btn.textContent = T("copied");
+          setTimeout(() => (btn.textContent = T("copy")), 1500);
         });
       }
     }
@@ -889,6 +892,7 @@
       }
       if (answer) {
         conversation.push(request.userMsg, { role: "assistant", content: answer });
+        saveToCache(currentUrl, conversation);
         const { meta, btn } = createMetaRow(msgEl, T("copy"), async () => {
           await navigator.clipboard.writeText(answer);
           btn.textContent = T("copied");
