@@ -1,4 +1,4 @@
-/* Euria Everywhere — valeurs par défaut partagées.
+/* Sovereign AI Panel — valeurs par défaut partagées.
  * Chargé avant background.js (manifest), content.js (executeScript) et
  * options.js (options.html) : une seule source de vérité pour les défauts.
  * Les défauts ne sont JAMAIS écrits dans storage.local : ils ne s'appliquent
@@ -12,21 +12,23 @@ if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-/* YOUR_PRODUCT_ID est un placeholder : chaque utilisateur remplace ce segment
- * par l'identifiant de SON produit AI Services (Manager Infomaniak), dans les
- * préférences. Aucune ID de compte réelle n'est embarquée dans le code. */
+/* L'utilisateur ne saisit que l'identifiant de SON produit AI Services (un
+ * nombre, ex. 12345) ; l'URL complète est construite à partir d'un gabarit
+ * figé. Aucune ID de compte réelle n'est embarquée dans le code. */
 var EURIA_DEFAULTS = {
-  apiUrl: "https://api.infomaniak.com/2/ai/YOUR_PRODUCT_ID/openai/v1/chat/completions",
+  productId: "",
   apiToken: "",
   model: "Qwen/Qwen3.5-122B-A10B-FP8",
   maxPageChars: 24000,
   lastLang: "fr"
 };
 
-var EURIA_URL_PLACEHOLDER = "YOUR_PRODUCT_ID";
-
-/* Seul domaine autorisé pour l'API : le jeton ne doit jamais partir ailleurs. */
+/* Seul domaine autorisé (le jeton ne peut partir qu'ici) + construction de
+ * l'URL. encodeURIComponent empêche toute évasion de chemin via l'identifiant. */
 var EURIA_API_ORIGIN = "https://api.infomaniak.com/";
+function EURIA_API_URL(productId) {
+  return "https://api.infomaniak.com/2/ai/" + encodeURIComponent(productId) + "/openai/v1/chat/completions";
+}
 
 /* ---------- i18n : bascule automatique sur la langue du navigateur ----------
  * Français si la locale de l'interface commence par « fr », anglais sinon.
@@ -43,18 +45,18 @@ function EURIA_LANG() {
 var EURIA_STRINGS = {
   fr: {
     // Menus contextuels + bouton barre d'outils
-    menuRoot: "Euria",
+    menuRoot: "Sovereign AI",
     menuSummarizePage: "Résumer la page",
     menuKeypoints: "Extraire les points clés",
     menuTranslatePage: "Traduire la page",
     menuSummarizeSel: "Résumer la sélection",
     menuTermSel: "Rechercher « %s »",
     menuTranslateSel: "Traduire la sélection",
-    actionTitle: "Euria — assistant IA",
+    actionTitle: "Sovereign AI — assistant IA",
     // Erreurs (arrière-plan)
     errNoToken: "Aucun jeton API configuré. La page de préférences vient de s'ouvrir : collez-y votre jeton Infomaniak AI Tools.",
-    errBadUrl: "URL d'API refusée : le jeton n'est envoyé qu'à %s. Corrigez l'URL dans les préférences.",
-    errNoPermission: "Permission manquante pour api.infomaniak.com. Ouvrez about:addons → Euria Everywhere → Permissions et autorisez l'accès à api.infomaniak.com.",
+    errNoProductId: "Configurez l'identifiant de votre produit AI Services dans les préférences.",
+    errNoPermission: "Permission manquante pour api.infomaniak.com. Ouvrez about:addons → Sovereign AI Panel → Permissions et autorisez l'accès à api.infomaniak.com.",
     // Panneau
     hello: "Bonjour,",
     help: "Comment puis-je vous aider ?",
@@ -64,8 +66,8 @@ var EURIA_STRINGS = {
     suggTranslate: "Traduire",
     placeholder: "Posez votre question ici",
     placeholderTerm: "Entrez le terme à rechercher…",
-    disclaimer: "Euria peut se tromper. Vérifiez en cas de doute.",
-    thinking: "Euria réfléchit",
+    disclaimer: "L'IA peut se tromper. Vérifiez en cas de doute.",
+    thinking: "L'assistant réfléchit",
     reasoning: "Raisonnement",
     copy: "Copier",
     copied: "Copié ✓",
@@ -80,7 +82,7 @@ var EURIA_STRINGS = {
     aInput: "Votre question",
     aSend: "Envoyer",
     aStop: "Arrêter",
-    dialogLabel: "Euria — assistant IA",
+    dialogLabel: "Sovereign AI — assistant IA",
     tokens: "tokens",
     selectionSuffix: " (sélection)",
     translateIn: " en %s",
@@ -94,30 +96,29 @@ var EURIA_STRINGS = {
     retrying: "Serveur occupé (HTTP %s), nouvelle tentative %a/2…",
     errDisconnect: "Connexion au processus d'arrière-plan perdue (extension rechargée ?). Réessayez.",
     // Préférences
-    optTitle: "Euria Everywhere (Unofficial) — Préférences",
-    optApiUrl: "URL de l'API",
+    optTitle: "Sovereign AI Panel — Préférences",
+    optProductId: "Identifiant du produit AI Services",
     optApiToken: "Jeton API (Bearer)",
     optHint: "Jeton Infomaniak AI Tools. Ne partagez jamais ce jeton.",
     optModel: "Modèle",
     optMaxChars: "Taille max. du contenu de page envoyé (caractères)",
     optSave: "Enregistrer",
     optSaved: "Enregistré ✓",
-    optUrlRejected: "URL refusée : elle doit commencer par %s",
-    optUrlHint: "Remplacez YOUR_PRODUCT_ID par l'identifiant de votre produit AI Services (Manager Infomaniak).",
-    errPlaceholder: "Configurez votre URL d'API : remplacez YOUR_PRODUCT_ID par l'ID de votre produit AI Services dans les préférences."
+    optProductHint: "Le numéro de votre produit AI Services, visible dans le Manager Infomaniak (ex. 12345).",
+    optProductInvalid: "Identifiant invalide : uniquement des chiffres (ex. 12345)."
   },
   en: {
-    menuRoot: "Euria",
+    menuRoot: "Sovereign AI",
     menuSummarizePage: "Summarize page",
     menuKeypoints: "Extract key points",
     menuTranslatePage: "Translate page",
     menuSummarizeSel: "Summarize selection",
     menuTermSel: "Look up “%s”",
     menuTranslateSel: "Translate selection",
-    actionTitle: "Euria — AI assistant",
+    actionTitle: "Sovereign AI — AI assistant",
     errNoToken: "No API token configured. The preferences page just opened: paste your Infomaniak AI Tools token there.",
-    errBadUrl: "API URL rejected: the token is only ever sent to %s. Fix the URL in the preferences.",
-    errNoPermission: "Missing permission for api.infomaniak.com. Open about:addons → Euria Everywhere → Permissions and allow access to api.infomaniak.com.",
+    errNoProductId: "Configure your AI Services product ID in the preferences.",
+    errNoPermission: "Missing permission for api.infomaniak.com. Open about:addons → Sovereign AI Panel → Permissions and allow access to api.infomaniak.com.",
     hello: "Hello,",
     help: "How can I help you?",
     suggSummarize: "Summarize",
@@ -126,8 +127,8 @@ var EURIA_STRINGS = {
     suggTranslate: "Translate",
     placeholder: "Ask your question here",
     placeholderTerm: "Enter the term to look up…",
-    disclaimer: "Euria can make mistakes. Double-check when in doubt.",
-    thinking: "Euria is thinking",
+    disclaimer: "AI can make mistakes. Double-check when in doubt.",
+    thinking: "The assistant is thinking",
     reasoning: "Reasoning",
     copy: "Copy",
     copied: "Copied ✓",
@@ -142,7 +143,7 @@ var EURIA_STRINGS = {
     aInput: "Your question",
     aSend: "Send",
     aStop: "Stop",
-    dialogLabel: "Euria — AI assistant",
+    dialogLabel: "Sovereign AI — AI assistant",
     tokens: "tokens",
     selectionSuffix: " (selection)",
     translateIn: " to %s",
@@ -153,17 +154,16 @@ var EURIA_STRINGS = {
     actTerm: "Look up a term",
     retrying: "Server busy (HTTP %s), retrying %a/2…",
     errDisconnect: "Lost connection to the background process (extension reloaded?). Please retry.",
-    optTitle: "Euria Everywhere (Unofficial) — Preferences",
-    optApiUrl: "API URL",
+    optTitle: "Sovereign AI Panel — Preferences",
+    optProductId: "AI Services product ID",
     optApiToken: "API token (Bearer)",
     optHint: "Infomaniak AI Tools token. Never share this token.",
     optModel: "Model",
     optMaxChars: "Max size of page content sent (characters)",
     optSave: "Save",
     optSaved: "Saved ✓",
-    optUrlRejected: "URL rejected: it must start with %s",
-    optUrlHint: "Replace YOUR_PRODUCT_ID with your AI Services product ID (Infomaniak Manager).",
-    errPlaceholder: "Configure your API URL: replace YOUR_PRODUCT_ID with your AI Services product ID in the preferences."
+    optProductHint: "Your AI Services product number, shown in the Infomaniak Manager (e.g. 12345).",
+    optProductInvalid: "Invalid ID: digits only (e.g. 12345)."
   }
 };
 

@@ -1,4 +1,4 @@
-/* Euria Everywhere — script d'arrière-plan
+/* Sovereign AI Panel — script d'arrière-plan
  * Menus contextuels, raccourci clavier, injection à la demande du script de
  * contenu, et appels streamés (SSE) à l'API AI d'Infomaniak avec retry.
  * defaults.js est chargé avant ce fichier : via le tableau background.scripts
@@ -36,7 +36,7 @@ async function sendToTab(tabId, msg) {
     await browser.tabs.sendMessage(tabId, msg);
   } catch (e) {
     // Page privilégiée (about:, addons.mozilla.org, PDF…) : rien à faire.
-    console.warn("Euria : impossible d'ouvrir le panneau sur cet onglet.", e);
+    console.warn("Sovereign AI Panel : impossible d'ouvrir le panneau sur cet onglet.", e);
   }
 }
 
@@ -64,8 +64,13 @@ async function createMenus() {
 
 browser.runtime.onInstalled.addListener(async () => {
   createMenus();
+  // Migration : ancien réglage apiUrl -> productId (extrait le numéro du chemin).
+  const { apiUrl, productId, apiToken } = await browser.storage.local.get({ apiUrl: "", productId: "", apiToken: "" });
+  if (!productId && apiUrl) {
+    const m = apiUrl.match(/\/2\/ai\/(\d+)\//);
+    if (m) await browser.storage.local.set({ productId: m[1] });
+  }
   // Premier lancement sans jeton : ouvre directement les préférences.
-  const { apiToken } = await browser.storage.local.get({ apiToken: "" });
   if (!apiToken) browser.runtime.openOptionsPage();
 });
 
@@ -104,12 +109,9 @@ async function checkPrerequisites(settings) {
     browser.runtime.openOptionsPage();
     return EURIA_T("errNoToken");
   }
-  if (!settings.apiUrl.startsWith(EURIA_API_ORIGIN)) {
-    return EURIA_T("errBadUrl").replace("%s", EURIA_API_ORIGIN);
-  }
-  if (settings.apiUrl.includes(EURIA_URL_PLACEHOLDER)) {
+  if (!settings.productId) {
     browser.runtime.openOptionsPage();
-    return EURIA_T("errPlaceholder");
+    return EURIA_T("errNoProductId");
   }
   const granted = await browser.permissions.contains({ origins: [EURIA_API_ORIGIN + "*"] });
   if (!granted) {
@@ -157,7 +159,7 @@ browser.runtime.onConnect.addListener((port) => {
 
       let response = null;
       for (let attempt = 0; ; attempt++) {
-        response = await fetch(settings.apiUrl, {
+        response = await fetch(EURIA_API_URL(settings.productId), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -1,18 +1,18 @@
 /* Préférences — defaults.js est chargé avant ce fichier (options.html).
- * Un champ vidé revient à sa valeur par défaut (rien n'est stocké en vide,
- * pour ne pas masquer les défauts) et l'URL d'API est verrouillée sur le
- * domaine Infomaniak : le jeton ne doit jamais partir ailleurs.
+ * L'utilisateur saisit son identifiant de produit AI Services (un nombre) ;
+ * l'URL complète est construite par le code. Un champ vidé revient à sa valeur
+ * par défaut (rien n'est stocké en vide, pour ne pas masquer les défauts).
  */
 
-const FIELDS = ["apiUrl", "apiToken", "model", "maxPageChars"];
+const FIELDS = ["productId", "apiToken", "model", "maxPageChars"];
 
 // Localise l'interface selon la langue du navigateur (voir defaults.js).
 function localize() {
   document.documentElement.lang = EURIA_LANG();
   document.title = EURIA_T("optTitle");
   const map = {
-    "t-title": "optTitle", "t-apiUrl": "optApiUrl", "t-apiToken": "optApiToken",
-    "t-hint": "optHint", "t-urlHint": "optUrlHint", "t-model": "optModel", "t-maxPageChars": "optMaxChars", "save": "optSave"
+    "t-title": "optTitle", "t-productId": "optProductId", "t-apiToken": "optApiToken",
+    "t-hint": "optHint", "t-productHint": "optProductHint", "t-model": "optModel", "t-maxPageChars": "optMaxChars", "save": "optSave"
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
@@ -41,17 +41,14 @@ async function save() {
     values[key] = el.type === "number" ? Number(el.value) : el.value.trim();
   }
 
-  // Champ vide ou invalide → retour au défaut (sauf le jeton, qui peut être vide).
-  if (!values.apiUrl) values.apiUrl = EURIA_DEFAULTS.apiUrl;
+  // Champ vide → retour au défaut (sauf jeton et identifiant, qui peuvent être
+  // vides ; le runtime invite alors à les renseigner).
   if (!values.model) values.model = EURIA_DEFAULTS.model;
   if (!(values.maxPageChars > 0)) values.maxPageChars = EURIA_DEFAULTS.maxPageChars;
 
-  if (!values.apiUrl.startsWith(EURIA_API_ORIGIN)) {
-    setStatus(EURIA_T("optUrlRejected").replace("%s", EURIA_API_ORIGIN), true);
-    return;
-  }
-  if (values.apiUrl.includes(EURIA_URL_PLACEHOLDER)) {
-    setStatus(EURIA_T("errPlaceholder"), true);
+  // L'identifiant de produit est un nombre (ex. 12345).
+  if (values.productId && !/^\d+$/.test(values.productId)) {
+    setStatus(EURIA_T("optProductInvalid"), true);
     return;
   }
 

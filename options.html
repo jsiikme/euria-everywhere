@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Euria Everywhere (Unofficial) — Préférences</title>
+  <title>Sovereign AI Panel</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -25,11 +25,11 @@
   </style>
 </head>
 <body>
-  <h1 id="t-title">Euria Everywhere (Unofficial)</h1>
+  <h1 id="t-title">Sovereign AI Panel</h1>
 
-  <label for="apiUrl" id="t-apiUrl">API URL</label>
-  <input id="apiUrl" type="url" spellcheck="false">
-  <div class="hint" id="t-urlHint">Replace YOUR_PRODUCT_ID with your AI Services product ID (Infomaniak Manager).</div>
+  <label for="productId" id="t-productId">AI Services product ID</label>
+  <input id="productId" type="text" inputmode="numeric" spellcheck="false" placeholder="12345">
+  <div class="hint" id="t-productHint">Your AI Services product number, shown in the Infomaniak Manager (e.g. 12345).</div>
 
   <label for="apiToken" id="t-apiToken">API token (Bearer)</label>
   <input id="apiToken" type="password" spellcheck="false">
