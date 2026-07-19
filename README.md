@@ -50,6 +50,47 @@ Chargez ensuite `dist/firefox` ou `dist/brave` comme ci-dessus. (À défaut, `di
 - Chaque réponse : bouton **Copier** + consommation de **tokens** affichée.
 - Le raisonnement du modèle (Qwen3.5 « réfléchit » avant de répondre) est disponible dans un bloc repliable pour les questions libres ; il est **désactivé pour les actions prédéfinies** (résumé, traduction…) — réponses plus rapides et moins de tokens facturés.
 
+## Prérequis : votre accès Infomaniak AI Services
+
+L'extension n'inclut aucun accès : elle utilise **le vôtre**. Il faut donc un produit **AI Services**, un **jeton API** et l'**identifiant de votre produit**. Comptez 5 minutes.
+
+### 1. Souscrire à AI Services (1 million de crédits offerts)
+
+Rendez-vous sur **[infomaniak.com/fr/hebergement/ai-services](https://www.infomaniak.com/fr/hebergement/ai-services)** et commandez le produit.
+
+- **1 million de crédits gratuits** pour tester le service **sans engagement pendant un mois**, puis facturation **à l'usage**.
+- Une **carte de crédit est requise** pour activer l'API (même pendant la période gratuite).
+- **Un seul produit AI Services par organisation** — en revanche vous pouvez créer autant de jetons API que nécessaire.
+- Vous pouvez fixer une **limite de dépense** sur le produit pour éviter tout dépassement.
+
+> Ne confondez pas les **tokens LLM** (les « crédits » consommés par vos requêtes, c'est le million offert) et le **token API** (votre clé d'authentification, ci-dessous).
+
+### 2. Créer votre clé API (token)
+
+1. Ouvrez la **[gestion des tokens](https://manager.infomaniak.com/v3/ng/profile/user/token/list)** dans le Manager Infomaniak.
+2. Cliquez sur **« Créer un token »**.
+3. Sélectionnez le **produit / application** (AI) et la **durée de validité**.
+4. Confirmez avec le **mot de passe** de votre compte.
+5. **Copiez le token immédiatement** — il ne sera plus jamais réaffiché.
+
+> Validité illimitée par défaut ; un token est automatiquement désactivé après **un an sans utilisation**. ([Guide officiel](https://www.infomaniak.com/fr/support/faq/2582/ajouter-et-gerer-les-tokens-api-infomaniak))
+
+### 3. Récupérer l'identifiant du produit (`product_id`)
+
+C'est un simple nombre (ex. `12345`). La méthode officielle est un appel à l'API avec le jeton créé à l'étape 2 :
+
+```sh
+curl -H "Authorization: Bearer VOTRE_JETON" https://api.infomaniak.com/1/ai
+```
+
+Le champ **`id`** de la réponse est votre `product_id`. ([Documentation de l'endpoint](https://developer.infomaniak.com/docs/api/post/2/ai/%7Bproduct_id%7D/openai/v1/chat/completions))
+
+### 4. Renseigner l'extension
+
+Ouvrez les **Préférences** de l'extension (voir ci-dessous) et saisissez l'**identifiant du produit** puis le **jeton API**. C'est tout : l'URL de l'API est construite automatiquement.
+
+Ces deux valeurs restent dans `storage.local`, **local à votre profil navigateur** — elles ne transitent que vers `api.infomaniak.com`, pour vos propres requêtes.
+
 ## Configuration
 
 Préférences (`about:addons` / `brave://extensions` → Sovereign AI Panel → Préférences) :

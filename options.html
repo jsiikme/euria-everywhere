@@ -16,6 +16,13 @@
       background: #fff;
     }
     .hint { color: #64748b; font-size: 12px; margin-top: 3px; }
+    .access {
+      background: #f2f6fe; border: 1px solid #c7d7f5; border-radius: 8px;
+      padding: 9px 12px; margin: 0 0 14px; font-size: 12.5px; color: #334155;
+    }
+    .access a { color: #2f6bff; font-weight: 600; text-decoration: none; }
+    .access a:hover { text-decoration: underline; }
+    .access .sep { color: #94a3b8; margin: 0 6px; }
     button {
       margin-top: 16px; background: #2f6bff; color: #fff; border: none;
       border-radius: 8px; padding: 9px 18px; font-size: 14px; cursor: pointer;
@@ -27,6 +34,13 @@
 </head>
 <body>
   <h1 id="t-title">Sovereign AI Panel</h1>
+
+  <div class="access">
+    <span id="t-needAccess">No access yet?</span>
+    <a id="lnk-service" href="https://www.infomaniak.com/en/hosting/ai-services" target="_blank" rel="noopener noreferrer">Get AI Services (1M free credits)</a>
+    <span class="sep">·</span>
+    <a id="lnk-token" href="https://manager.infomaniak.com/v3/ng/profile/user/token/list" target="_blank" rel="noopener noreferrer">Create an API token</a>
+  </div>
 
   <label for="uiLang" id="t-language">Interface language</label>
   <select id="uiLang">

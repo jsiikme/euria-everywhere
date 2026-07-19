@@ -13,12 +13,16 @@ function localize() {
   const map = {
     "t-title": "optTitle", "t-language": "optLanguage", "t-langAuto": "optLangAuto",
     "t-productId": "optProductId", "t-apiToken": "optApiToken",
-    "t-hint": "optHint", "t-productHint": "optProductHint", "t-model": "optModel", "t-maxPageChars": "optMaxChars", "save": "optSave"
+    "t-hint": "optHint", "t-productHint": "optProductHint", "t-model": "optModel", "t-maxPageChars": "optMaxChars", "save": "optSave",
+    "t-needAccess": "optNeedAccess", "lnk-service": "optOrderProduct", "lnk-token": "optCreateToken"
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
     if (el) el.textContent = EURIA_T(key);
   }
+  // Page produit localisée (FR/EN) pour le lien « Commander AI Services ».
+  const svc = document.getElementById("lnk-service");
+  if (svc) svc.href = EURIA_T("optServiceUrl");
 }
 
 function setStatus(text, isError) {
